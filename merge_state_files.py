@@ -1,5 +1,4 @@
 import json
-import glob
 import os
 import uuid
 
@@ -22,7 +21,10 @@ def merge_state_files(state_folder, output_file):
         "modules": []
     }
 
-    for folder_path in glob.glob(f"{state_folder_path}/*"):
+    folders_to_merge = ["networks", "instances", "gcs"]
+
+    for folder_name in folders_to_merge:
+        folder_path = os.path.join(state_folder_path, folder_name)
         state_file = os.path.join(folder_path, "us-central1/terraform.tfstate")
 
         if os.path.isfile(state_file):
@@ -34,13 +36,10 @@ def merge_state_files(state_folder, output_file):
         json.dump(merged_state, f, indent=4)
 
 # Specify the relative path to ce-ps-3team
-
 state_folder = 'generated/google/ce-ps-3team'  
 
 # Output file name
-
 output_file = 'merged_state.tfstate'
 
 # Call the function to merge 
-
 merge_state_files(state_folder, output_file)
